@@ -148,12 +148,17 @@ module Rotten_tomatoes
     end
 
     def set_audience_rating
+      @audience_rating = @info_page.css('.fan_side .meter').text
     end
 
     def set_audience_average_rating
+      match = @info_page.css('.fan_side .critic_stats').text.match(/Average Rating: ([\d\.]+)\//)
+      @audience_average_rating = match[1]
     end
 
     def set_audience_number_of_ratings
+      match = @info_page.css('.fan_side .critic_stats').text.match(/User Ratings: (\d+)/)
+      @audience_number_of_ratings = match[1]
     end
 
     def set_genres
