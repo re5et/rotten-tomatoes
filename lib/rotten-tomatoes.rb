@@ -89,10 +89,10 @@ module Rotten_tomatoes
       @cast = []
       @info_page.css('#cast-info li').each do |person|
         @cast.push({
-                     'name' => person.css('a').inner_html,
-                     'info_path' => person.css('a').first['href'],
-                     'thumbnail' => person.css('img').first['src'],
-                     'characters'=> person.css('.characters').first.content.gsub(/\(\)/, '')
+                     :name => person.css('a').inner_html,
+                     :info_path => person.css('a').first['href'],
+                     :thumbnail => person.css('img').first['src'],
+                     :characters => person.css('.characters').first.text.gsub('(', '').gsub(')', '')
                    })
       end
     end
@@ -101,8 +101,8 @@ module Rotten_tomatoes
       @writers = []
       @info_page.css('.movie_info .right_col p:nth-child(3) a').each do |writer|
         @writers.push({
-                        'name' => writer.inner_html,
-                        'info_path' => writer['href']
+                        :name => writer.inner_html,
+                        :info_path => writer['href']
                       })
       end
     end
@@ -111,8 +111,8 @@ module Rotten_tomatoes
       @directors = []
       @info_page.css('.movie_info .right_col p:nth-child(2) a').each do |director|
         @directors.push({
-                          'name' => director.inner_html,
-                          'info_path' => director['href']
+                          :name => director.inner_html,
+                          :info_path => director['href']
                         })
       end
     end
