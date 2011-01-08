@@ -1,9 +1,39 @@
 = rotten-tomatoes
 
-Description goes here.
+install the gem
+
+  gem install rotten-tomatoes
+
+use it
+
+  require 'rubygems'
+  require 'rotten-tomatoes'
+
+  # get a movie
+  movie = Rotten_tomatoes::lucky_get_info 'evil dead'
+
+  # do stuff with it
+  puts movie.title
+  puts movie.year
+  puts movie.runtime
+  puts movie.rating
+  puts movie.tomatometer
+  puts movie.tomatometer_average_rating
+  puts movie.tomatometer_reviews_counted
+  puts movie.tomatometer_fresh
+  puts movie.tomatometer_rotten
+  puts movie.audience_rating
+  puts movie.number_of_ratings
+  puts movie.number_of_critic_reviews
+  puts movie.genres
+  puts movie.release
+  puts movie.distributor
+
+  movie.cast.each do |cast_member|
+  end
 
 == Note on Patches/Pull Requests
- 
+
 * Fork the project.
 * Make your feature addition or bug fix.
 * Add tests for it. This is important so I don't break it in a
