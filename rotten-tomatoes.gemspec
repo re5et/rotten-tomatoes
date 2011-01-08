@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rotten-tomatoes}
-  s.version = "0.1.2"
+  s.version = "0.1.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["atom smith"]
-  s.date = %q{2011-01-07}
+  s.date = %q{2011-01-08}
   s.description = %q{Allows you to search and get information about movies from rottentomatoes.com.  Organizes returned information into easy to access attributes.}
   s.email = %q{re5etsmyth@gmail.com}
   s.extra_rdoc_files = [
