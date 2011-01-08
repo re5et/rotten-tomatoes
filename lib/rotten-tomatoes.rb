@@ -163,7 +163,7 @@ module Rotten_tomatoes
 
     def set_genres
       @genres = []
-      @info_page.css('.movie_info p:first-of-type .content a').each do |genre|
+      @info_page.css('.movie_info > p:first-of-type .content a').each do |genre|
         @genres.push genre.text
       end
     end
