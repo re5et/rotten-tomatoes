@@ -5,8 +5,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "rotten-tomatoes"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = 'Fetch information regarding movies from rottentomatoes.com'
+    gem.description = 'Allows you to search and get information about movies from rottentomatoes.com.  Organizes returned information into easy to access attributes.'
     gem.email = "re5etsmyth@gmail.com"
     gem.homepage = "http://github.com/re5et/rotten-tomatoes"
     gem.authors = ["atom smith"]
