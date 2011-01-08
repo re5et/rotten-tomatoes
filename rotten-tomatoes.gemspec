@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
     "Rakefile",
     "VERSION",
     "lib/rotten-tomatoes.rb",
+    "rotten-tomatoes.gemspec",
     "test/helper.rb",
     "test/test_rotten-tomatoes.rb"
   ]
