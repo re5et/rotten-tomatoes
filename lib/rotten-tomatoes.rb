@@ -50,7 +50,7 @@ module Rotten_tomatoes
   # information about the movie into easily accessible attribues.
   class Movie
 
-    attr_reader :info_page, :title, :year, :people, :cast, :writers, :directors, :runtime, :rating, :tomatometer, :tomatometer_average_rating, :tomatometer_reviews_counted, :tomatometer_fresh, :tomatometer_rotten, :audience_rating, :number_of_ratings, :number_of_critic_reviews, :fresh_reviews, :rotten_reviews, :average_critic_rating, :genres, :release, :distributor
+    attr_reader :info_page, :title, :year, :people, :cast, :writers, :directors, :runtime, :rating, :tomatometer, :tomatometer_average_rating, :tomatometer_reviews_counted, :tomatometer_fresh, :tomatometer_rotten, :audience_rating, :audience_average_rating, :audience_number_of_ratings, :genres, :release, :distributor
 
     def initialize movie_url
       @info_page = Nokogiri::HTML(open(URI.parse(Rotten_tomatoes::Base_url + movie_url)))
