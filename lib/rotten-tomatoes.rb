@@ -88,7 +88,6 @@ module Rotten_tomatoes
     def set_cast
       @cast = []
       @info_page.css('#cast-info li').each do |person|
-        p person
         @cast.push({
                      'name' => person.css('a').inner_html,
                      'info_path' => person.css('a').first['href'],
