@@ -13,12 +13,17 @@ require 'open-uri'
 module Rotten_tomatoes
 
   Base_url = 'http://www.rottentomatoes.com'
-  Search_url = Base_url + '/search/movie.php?searchby=movies&page=1&search='
+  Movie_search_url = Base_url + '/search/movie.php?searchby=movies&page=1&search='
+  Person_search_url = Base_url + '/search/person.php?searchby=celebs&page=1&search='
 
   # Create a new instance of Rotten_tomatoes::Movie with the
   # rottentomatoes.com movie path as an argument
-  def self.get_info info_path
-    Movie.new info_path
+  def self.get_movie_info movie_path
+    Movie.new movie_path
+  end
+
+  def self.get_person_info person_path
+    Person.new person_path
   end
 
   # Search rottentomatoes.com for the movie you are looking for
@@ -26,7 +31,7 @@ module Rotten_tomatoes
   # will contain the 'info_url' you need to us Rotten_tomatoes:get_info
   def self.find_movie movie
     movies = []
-    url = URI.parse(URI.encode(Search_url + movie))
+    url = URI.parse(URI.encode(Movie_search_url + movie.to_s))
     results = Nokogiri::HTML(open(url))
     results.css('#movie_search_main tr').each do |row|
       movies.push({
@@ -34,16 +39,33 @@ module Rotten_tomatoes
                     :plot => row.css('td:nth-of-type(3) p:nth-of-type(2)').inner_text.gsub(/\APlot:/, '').strip,
                     :year => row.css('.date').inner_text,
                     :director => row.css('td:nth-of-type(3) p:nth-of-type(3) a:first-of-type').inner_text,
-                    :info_url => row.css('td:nth-of-type(3) p:first-of-type a').attr('href').value
+                    :movie_url => row.css('td:nth-of-type(3) p:first-of-type a').attr('href').value
                   })
     end
     return movies
   end
 
+  def self.find_person person
+    people = []
+    url = URI.parse(URI.encode(Person_search_url + person.to_s))
+    results = Nokogiri::HTML(open(url))
+    results.css('#contrib_search_main tbody a').each do |row|
+      people.push({
+                    :name => row.text,
+                    :person_url => row.attribute('href').value
+                  })
+    end
+    return people
+  end
+
   # Uses Rotten_tomatoes::get_info to fetch info for the first
   # search result found with Rotten_tomatoes::find_movie
-  def self.lucky_get_info movie
-    get_info find_movie(movie).first[:info_url]
+  def self.lucky_get_movie_info movie
+    get_movie_info find_movie(movie).first[:movie_url]
+  end
+
+  def self.lucky_get_person_info person
+    get_person_info find_person(person).first[:person_url]
   end
 
   # Rotten_tomatoes::Movie is a class that organizes the scraped
@@ -73,6 +95,7 @@ module Rotten_tomatoes
         set_release
         set_distributor
       end
+      @info_page = nil
       return self
     end
 
@@ -184,6 +207,90 @@ module Rotten_tomatoes
 
     def writer
       @writers.first
+    end
+
+  end
+
+  class Person
+
+    attr_reader :name, :main_role, :picture, :highest_rated, :lowest_rated, :birthdate, :birthplace, :age, :bio, :number_of_movies, :box_office, :movies
+
+    def initialize person_url
+
+      @info_page = Nokogiri::HTML(open(URI.parse(Rotten_tomatoes::Base_url + person_url + '?items=999')))
+      if @info_page
+        set_movies
+        set_name
+        set_main_role
+        set_picture
+        set_highest_rated
+        set_lowest_rated
+        set_birthdate
+        set_birthplace
+        set_age
+        set_bio
+        set_number_of_movies
+        set_box_office
+      end
+      @info_page = nil
+      return self
+    end
+
+    def set_name
+      @name =  @info_page.css('h1.celeb_title').text
+    end
+
+    def set_main_role
+      @main_role = @info_page.css('#breadcrumb .subLevelCrumb').text.gsub('/', '').chomp('s')
+    end
+
+    def set_picture
+      @picture = @info_page.css('#mainImage').attribute('src').value
+    end
+
+    def set_highest_rated
+      highest_rated_url = @info_page.css('#celebRatings p:first a').attribute('href').value
+      @highest_rated = @movies[@movies.index {|movie| movie[:movie_url] == highest_rated_url}]
+    end
+
+    def set_lowest_rated
+      lowest_rated_url = @info_page.css('#celebRatings p:nth-of-type(2) a').attribute('href').value
+      @lowest_rated = @movies[@movies.index {|movies| movies[:movie_url] == lowest_rated_url}]
+    end
+
+    def set_birthdate
+      @birthdate = Time.parse @info_page.css('#celeb_bio p:first').text.split("Birthdate: ").last.strip
+    end
+
+    def set_birthplace
+      @birthplace = @info_page.css('#celeb_bio p:nth-of-type(2)').text.split("Birthplace: ").last.strip
+    end
+
+    def set_age
+      @age = ((Time.now - @birthdate) / 60 / 60 / 24 / 365).floor
+    end
+
+    def set_bio
+      @bio = @info_page.css('#celeb_bio p:nth-of-type(3)').text.split("Bio:").last.gsub('[More...]', '').strip
+    end
+
+    def set_number_of_movies
+      @number_of_movies = @movies.size
+    end
+
+    def set_box_office
+      @box_office = @info_page.css('#celeb_stats div.celeb_stat.last').text.split(":").last.strip
+    end
+
+    def set_movies
+      @movies = []
+      @info_page.css('#filmographyTbl tbody tr').each do |movie|
+        @movies.push({
+          :title => movie.css('.filmographyTbl_titleCol').text.strip,
+          :movie_url => movie.css('.filmographyTbl_titleCol a').attribute('href').value,
+          :credit => movie.css('.filmographyTbl_creditCol').text.strip
+        })
+      end
     end
 
   end
