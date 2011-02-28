@@ -18,7 +18,7 @@ require 'rubygems'
 require 'rotten-tomatoes'
 
   # get a movie
-  movie = Rotten_tomatoes::lucky_get_info movie_name
+  movie = Rotten_tomatoes::lucky_get_movie_info movie_name
 
   # do stuff with it
   puts movie.title
